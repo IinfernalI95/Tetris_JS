@@ -13,11 +13,35 @@ const startY = 0;
 let currentX = startX;
 let currentY = startY;
 
-// Определяем первую фигуру (O-тетромино)
-const O_Tetromino = [
-  [1, 1],
-  [1, 1],
-];
+const TETROMINOS = {
+  O: [
+    [1, 1],
+    [1, 1],
+  ],
+  I: [[1, 1, 1, 1]],
+  L: [
+    [1, 0],
+    [1, 0],
+    [1, 1],
+  ],
+  J: [
+    [0, 1],
+    [0, 1],
+    [1, 1],
+  ],
+  T: [
+    [0, 1, 0],
+    [1, 1, 1],
+  ],
+  S: [
+    [0, 1, 1],
+    [1, 1, 0],
+  ],
+  Z: [
+    [1, 1, 0],
+    [0, 1, 1],
+  ],
+};
 
 function showGrid() {
   for (let row = 0; row < rows; row++) {
@@ -45,16 +69,26 @@ function drawTetromino(matrix, x, y, color) {
   }
 }
 
-showGrid();
-drawTetromino(O_Tetromino, startX, startY, "yellow");
+function getRandomTetromino() {
+  const keys = Object.keys(TETROMINOS);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  return TETROMINOS[randomKey];
+}
+
+// showGrid();
+let currentTetromino = getRandomTetromino();
 
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  showGrid(); // Перерисовываем сетку
-  drawTetromino(O_Tetromino, currentX, currentY, "yellow");
+  showGrid();
+  drawTetromino(currentTetromino, currentX, currentY, "yellow");
 
-  if (currentY < rows - O_Tetromino.length) {
+  if (currentY < rows - currentTetromino.length) {
     currentY += 1;
+  } else {
+    currentY = startY;
+    currentX = startX;
+    currentTetromino = getRandomTetromino();
   }
 }
 
