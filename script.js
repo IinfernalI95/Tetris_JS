@@ -13,6 +13,30 @@ const startY = 0;
 let currentX = startX;
 let currentY = startY;
 
+document.addEventListener("keydown", handleKeyPress);
+
+function handleKeyPress(event) {
+  if (event.key === "ArrowLeft") {
+    moveLeft();
+  } else if (event.key === "ArrowRight") {
+    moveRight();
+  }
+}
+
+// Двигаем фигуру влево
+function moveLeft() {
+  if (currentX > 0) {
+    currentX -= 1;
+  }
+}
+
+// Двигаем фигуру вправо
+function moveRight() {
+  if (currentX < colums - currentTetromino[0].length) {
+    currentX += 1;
+  }
+}
+
 const TETROMINOS = {
   O: [
     [1, 1],
@@ -40,7 +64,7 @@ const TETROMINOS = {
   Z: [
     [1, 1, 0],
     [0, 1, 1],
-  ],
+  ]
 };
 
 function showGrid() {
