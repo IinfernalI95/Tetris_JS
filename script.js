@@ -15,28 +15,6 @@ let currentY = startY;
 
 document.addEventListener("keydown", handleKeyPress);
 
-function handleKeyPress(event) {
-  if (event.key === "ArrowLeft") {
-    moveLeft();
-  } else if (event.key === "ArrowRight") {
-    moveRight();
-  }
-}
-
-// Двигаем фигуру влево
-function moveLeft() {
-  if (currentX > 0) {
-    currentX -= 1;
-  }
-}
-
-// Двигаем фигуру вправо
-function moveRight() {
-  if (currentX < colums - currentTetromino[0].length) {
-    currentX += 1;
-  }
-}
-
 const TETROMINOS = {
   O: [
     [1, 1],
@@ -66,6 +44,50 @@ const TETROMINOS = {
     [0, 1, 1],
   ]
 };
+
+function handleKeyPress(event) {
+  if (event.key === "ArrowLeft") {
+    moveLeft();
+  } else if (event.key === "ArrowRight") {
+    moveRight();
+  } else if (event.key === "ArrowUp") {
+    rotateTetromino();
+  }
+}
+
+// Двигаем фигуру влево
+function moveLeft() {
+  if (currentX > 0) {
+    currentX -= 1;
+  }
+}
+
+// Двигаем фигуру вправо
+function moveRight() {
+  if (currentX < colums - currentTetromino[0].length) {
+    currentX += 1;
+  }
+}
+
+function rotateTetromino() {
+  // Создаём новую повернутую версию фигуры
+  let rotated = [];
+
+  // Проходим по колонкам старой фигуры
+  for (let col = 0; col < currentTetromino[0].length; col++) {
+    rotated[col] = []; // Создаём новый столбец
+
+    // Заполняем его значениями из строк старой фигуры
+    for (let row = currentTetromino.length - 1; row >= 0; row--) {
+      rotated[col].push(currentTetromino[row][col]);
+    }
+  }
+
+  // Проверяем, можно ли повернуть фигуру
+  if (!collides(rotated, currentX, currentY)) {
+    currentTetromino = rotated; // Сохраняем новый вариант фигуры
+  }
+}
 
 function showGrid() {
   for (let row = 0; row < rows; row++) {
@@ -117,3 +139,14 @@ function update() {
 }
 
 setInterval(update, 500);
+
+function collides(matrix, x, y) {
+  for (let row = 0; row < matrix.length; row++) {
+    for (let col = 0; col < matrix[row].length; col++) {
+      if (matrix[row][col] && (x + col < 0 || x + col >= colums || y + row >= rows)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
