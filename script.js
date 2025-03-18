@@ -13,6 +13,10 @@ const startY = 0;
 let currentX = startX;
 let currentY = startY;
 
+const grid = Array(rows)
+  .fill(null)
+  .map(() => Array(colums).fill(0));
+
 document.addEventListener("keydown", handleKeyPress);
 
 const TETROMINOS = {
@@ -42,7 +46,7 @@ const TETROMINOS = {
   Z: [
     [1, 1, 0],
     [0, 1, 1],
-  ]
+  ],
 };
 
 function handleKeyPress(event) {
@@ -127,14 +131,25 @@ let currentTetromino = getRandomTetromino();
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   showGrid();
+  drawBoard();
   drawTetromino(currentTetromino, currentX, currentY, "yellow");
 
-  if (currentY < rows - currentTetromino.length) {
+  // Проверяем возможность движения вниз
+  if (!collides(currentTetromino, currentX, currentY + 1)) {
     currentY += 1;
   } else {
-    currentY = startY;
-    currentX = startX;
+    merge(); // фиксируем фигуру если есть столкновение
     currentTetromino = getRandomTetromino();
+    currentX = startX;
+    currentY = startY;
+
+    // Проверяем возможность размещения новой фигуры
+    if (collides(currentTetromino, currentX, currentY)) {
+      // Если сразу есть коллизия - игра окончена
+      alert("Game Over!");
+      // Здесь можно добавить сброс игры
+      grid.forEach((row) => row.fill(0));
+    }
   }
 }
 
@@ -143,10 +158,77 @@ setInterval(update, 500);
 function collides(matrix, x, y) {
   for (let row = 0; row < matrix.length; row++) {
     for (let col = 0; col < matrix[row].length; col++) {
-      if (matrix[row][col] && (x + col < 0 || x + col >= colums || y + row >= rows)) {
-        return true;
+      if (matrix[row][col]) {
+        let newY = y + row;
+        let newX = x + col;
+
+        // Проверяем границы поля
+        if (newX < 0 || newX >= colums || newY >= rows) {
+          return true;
+        }
+
+        // Проверяем столкновение с уже размещенными фигурами
+        if (newY >= 0 && grid[newY][newX]) {
+          return true;
+        }
       }
     }
   }
   return false;
+}
+
+function merge() {
+  for (let row = 0; row < currentTetromino.length; row++) {
+    for (let col = 0; col < currentTetromino[row].length; col++) {
+      if (currentTetromino[row][col]) {
+        grid[currentY + row][currentX + col] = 1;
+      }
+    }
+  }
+}
+
+function moveDown() {
+  if (!collides(currentTetromino, currentX, currentY + 1)) {
+    currentY++;
+  } else {
+    merge();
+    // Проверяем, есть ли заполненные линии
+    checkLines();
+    spawnNewTetromino();
+  }
+}
+
+function checkLines() {
+  for (let row = rows - 1; row >= 0; row--) {
+    // Проверяем, заполнена ли строка
+    if (grid[row].every((cell) => cell === 1)) {
+      // Удаляем заполненную строку
+      grid.splice(row, 1);
+      // Добавляем новую пустую строку сверху
+      grid.unshift(new Array(colums).fill(0));
+    }
+  }
+}
+
+function spawnNewTetromino() {
+  currentTetromino = getRandomTetromino(); // Берём случайную фигуру
+  currentX = startX; // Ставим в центр
+  currentY = startY; // Начинаем сверху
+
+  if (collides(currentTetromino, currentX, currentY)) {
+    alert("Game Over!"); // Если сразу есть коллизия — конец игры
+    //resetGame();
+  }
+}
+
+function drawBoard() {
+  // Отрисовка зафиксированных фигур
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < colums; col++) {
+      if (grid[row][col]) {
+        ctx.fillStyle = "red"; // цвет для зафиксированных блоков
+        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+      }
+    }
+  }
 }

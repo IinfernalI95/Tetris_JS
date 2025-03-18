@@ -4,12 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Тетрис</title>
+    <style>
+      canvas {
+        border: 2px solid black;
+        display: block;
+        margin: 0 auto;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+    </style>
   </head>
   <body>
     <!-- Это элемент Canvas, на котором мы будем рисовать -->
     <canvas id="gameCanvas" width="300" height="600"></canvas>
 
-    <!-- Подключаем файл с JavaScript -->
-    <script src="script.js"></script>
+    <!-- Подключаем модели -->
+    <script src="models/Board.js"></script>
+    <script src="models/Tetromino.js"></script>
+
+    <!-- Подключаем представление -->
+    <script src="views/GameView.js"></script>
+
+    <!-- Подключаем контроллер -->
+    <script src="controllers/GameController.js"></script>
+
+    <!-- Подключаем основной класс игры -->
+    <script src="Game.js"></script>
+
+    <!-- Инициализация игры -->
+    <script>
+      window.onload = function () {
+        const canvas = document.getElementById("gameCanvas");
+        const game = new Game(canvas);
+        game.start();
+      };
+    </script>
   </body>
 </html>
