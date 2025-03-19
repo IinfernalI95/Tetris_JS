@@ -18,24 +18,12 @@ class Game {
   }
 
   update() {
-    // Проверяем, может ли фигура двигаться вниз
-    if (!this.board.hasCollision(this.tetromino, 0, 1)) {
-      this.tetromino.moveDown();
-    } else {
-      // Если движение вниз невозможно:
-      // 1. Фиксируем фигуру на поле
-      this.board.addTetromino(this.tetromino);
-      // 2. Создаем новую фигуру
-      this.tetromino = new Tetromino();
-      // Обновляем ссылку на тетрамино в контроллере
-      this.controller.updateTetromino(this.tetromino);
-
-      // 3. Проверяем, можно ли разместить новую фигуру
-      if (this.board.hasCollision(this.tetromino)) {
-        this.gameOver();
-        return;
-      }
+    const isGameOver = this.controller.moveDown();
+    if (isGameOver) {
+      this.gameOver();
+      return;
     }
+    this.tetromino = this.controller.getCurrentTetromino();
   }
 
   render() {
@@ -51,11 +39,9 @@ class Game {
   }
 
   resetGame() {
-    // Сбрасываем состояние игры
     this.board = new Board(20, 10);
     this.tetromino = new Tetromino();
-
-    // Перезапускаем игровой цикл
+    this.controller = new GameController(this.board, this.tetromino);
     this.start();
   }
 }

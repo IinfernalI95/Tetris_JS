@@ -52,7 +52,31 @@ class GameController {
     }
   }
 
-  updateTetromino(tetromino) {
-    this.currentTetromino = tetromino;
+  moveDown() {
+    if (!this.board.hasCollision(this.currentTetromino, 0, 1)) {
+      this.currentTetromino.moveDown();
+      return false;
+    }
+
+    this.board.addTetromino(this.currentTetromino);
+    this.currentTetromino = new Tetromino();
+
+    if (this.board.hasCollision(this.currentTetromino)) {
+      this.isGameOver = true;
+      return true;
+    }
+
+    return false;
+  }
+
+  moveTetrominoDown() {
+    if (this.moveDown()) {
+      return true; // game over
+    }
+    return false;
+  }
+
+  getCurrentTetromino() {
+    return this.currentTetromino;
   }
 }
