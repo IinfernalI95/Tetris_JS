@@ -26,7 +26,7 @@ class GameController {
         this.rotateTetromino();
         break;
       case "ArrowDown":
-        this.moveTetrominoDown();
+        this.moveDown();
         break;
     }
   }
@@ -67,13 +67,6 @@ class GameController {
       return true;
     }
 
-    return false;
-  }
-
-  moveTetrominoDown() {
-    if (this.moveDown()) {
-      return true; // game over
-    }
     return false;
   }
 
