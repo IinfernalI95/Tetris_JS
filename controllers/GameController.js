@@ -32,16 +32,14 @@ class GameController {
   }
 
   moveTetrominoLeft() {
-    this.currentTetromino.moveLeft();
-    if (this.board.hasCollision(this.currentTetromino)) {
-      this.currentTetromino.moveRight();
+    if (!this.board.hasCollision(this.currentTetromino, -1, 0)) {
+      this.currentTetromino.moveLeft();
     }
   }
 
   moveTetrominoRight() {
-    this.currentTetromino.moveRight();
-    if (this.board.hasCollision(this.currentTetromino)) {
-      this.currentTetromino.moveLeft();
+    if (!this.board.hasCollision(this.currentTetromino, 1, 0)) {
+      this.currentTetromino.moveRight();
     }
   }
 
@@ -52,5 +50,9 @@ class GameController {
     if (this.board.hasCollision(this.currentTetromino)) {
       this.currentTetromino.currentShape = previousShape;
     }
+  }
+
+  updateTetromino(tetromino) {
+    this.currentTetromino = tetromino;
   }
 }

@@ -7,7 +7,7 @@ class Game {
     this.controller = new GameController(this.board, this.tetromino);
 
     this.gameLoop = null;
-    this.speed = 100;
+    this.speed = 500;
   }
 
   start() {
@@ -27,6 +27,8 @@ class Game {
       this.board.addTetromino(this.tetromino);
       // 2. Создаем новую фигуру
       this.tetromino = new Tetromino();
+      // Обновляем ссылку на тетрамино в контроллере
+      this.controller.updateTetromino(this.tetromino);
 
       // 3. Проверяем, можно ли разместить новую фигуру
       if (this.board.hasCollision(this.tetromino)) {
@@ -45,5 +47,15 @@ class Game {
   gameOver() {
     clearInterval(this.gameLoop);
     alert("Game Over!");
+    this.resetGame();
+  }
+
+  resetGame() {
+    // Сбрасываем состояние игры
+    this.board = new Board(20, 10);
+    this.tetromino = new Tetromino();
+
+    // Перезапускаем игровой цикл
+    this.start();
   }
 }
