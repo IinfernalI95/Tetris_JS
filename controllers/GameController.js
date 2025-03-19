@@ -59,6 +59,7 @@ class GameController {
     }
 
     this.board.addTetromino(this.currentTetromino);
+    this.board.checkLines();
     this.currentTetromino = new Tetromino();
 
     if (this.board.hasCollision(this.currentTetromino)) {

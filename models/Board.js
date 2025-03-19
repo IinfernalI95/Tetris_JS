@@ -51,4 +51,21 @@ class Board {
     }
     return false;
   }
+
+  checkLines() {
+    let linesCleared = 0;
+    for (let row = this.rows - 1; row >= 0; row--) {
+      // Проверяем, заполнена ли строка
+      if (this.grid[row].every((cell) => cell === 1)) {
+        // Удаляем заполненную строку
+        this.grid.splice(row, 1);
+        // Добавляем новую пустую строку сверху
+        this.grid.unshift(new Array(this.columns).fill(0));
+        linesCleared++;
+        // Так как мы удалили строку, нужно проверить текущую позицию еще раз
+        row++;
+      }
+    }
+    return linesCleared;
+  }
 }
